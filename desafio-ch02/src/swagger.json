@@ -1,0 +1,309 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Documentation challenge 2 - Ignite",
+    "description": "Documentation challenge 2 - Ignite",
+    "contact": {
+      "name": "Carlos Severo",
+      "url": "https://carlossevero.com.br",
+      "email": "severo.e.carlos@gmail.com"
+    },
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "http://localhost:3000/",
+      "description": "API de teste"
+    }
+  ],
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": ["User"],
+        "summary": "Cadastro de usuário",
+        "description": "Rota responsável pela criação de usuário",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User"
+              },
+              "examples": {
+                "user": {
+                  "value": {
+                    "name": "John Doe",
+                    "email": "john@email.com"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Criado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "example": {
+                  "id": "61c71164-7a03-4a2a-a137-a6f28797123d",
+                  "name": "John Doe",
+                  "email": "john@email.com",
+                  "admin": false,
+                  "created_at": "2021-06-29T13:14:01.750Z",
+                  "updated_at": "2021-06-29T13:14:01.750Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "User already exists",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "error": "string"
+                    },
+                    "example": {
+                      "error": "This email is already in use"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "tags": ["User"],
+        "summary": "Lista todos usuários",
+        "description": "O usuário precisa ser um admin e recebe o user_id passado via header",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "header",
+            "required": true,
+            "description": "ID do usuário admin para listar todos os usuários"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "examples": [
+                  {
+                    "id": "61c71164-7a03-4a2a-a137-a6f28797123d",
+                    "name": "John Doe",
+                    "email": "john@email.com",
+                    "admin": false,
+                    "created_at": "2021-06-29T13:14:01.750Z",
+                    "updated_at": "2021-06-29T13:14:01.750Z"
+                  },
+                  {
+                    "id": "61c71164-7a03-4a2a-a137-a6f28797123d",
+                    "name": "John Doe",
+                    "email": "john@email.com",
+                    "admin": false,
+                    "created_at": "2021-06-29T13:14:01.750Z",
+                    "updated_at": "2021-06-29T13:14:01.750Z"
+                  },
+                  {
+                    "id": "61c71164-7a03-4a2a-a137-a6f28797123d",
+                    "name": "John Doe",
+                    "email": "john@email.com",
+                    "admin": false,
+                    "created_at": "2021-06-29T13:14:01.750Z",
+                    "updated_at": "2021-06-29T13:14:01.750Z"
+                  }
+                ]
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não é um admin",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "error": "string"
+                    },
+                    "example": {
+                      "error": "Usuário não é um admin"
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "error": "string"
+                    },
+                    "example": {
+                      "error": "Usuário não encontrado"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}": {
+      "get": {
+        "tags": ["User"],
+        "summary": "Retorna o perfil do usuário",
+        "description": "Retorna o perfil do usuário referente ao ID passado na query",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "ID do usuário para listar o perfil"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "example": {
+                  "id": "61c71164-7a03-4a2a-a137-a6f28797123d",
+                  "name": "John Doe",
+                  "email": "john@email.com",
+                  "admin": false,
+                  "created_at": "2021-06-29T13:14:01.750Z",
+                  "updated_at": "2021-06-29T13:14:01.750Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "error": "string"
+                    },
+                    "example": {
+                      "error": "Usuário não encontrado"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/users/{user_id}/admin": {
+      "patch": {
+        "tags": ["User"],
+        "summary": "Muda o status admin do usuário para true",
+        "description": "Muda o status admin do usuário para true",
+        "parameters": [
+          {
+            "name": "user_id",
+            "in": "path",
+            "required": true,
+            "description": "ID do usuário para mudar o status admin"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Sucesso",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/User"
+                },
+                "example": {
+                  "id": "61c71164-7a03-4a2a-a137-a6f28797123d",
+                  "name": "John Doe",
+                  "email": "john@email.com",
+                  "admin": true,
+                  "created_at": "2021-06-29T13:14:01.750Z",
+                  "updated_at": "2021-06-29T13:14:01.750Z"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Usuário não encontrado",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "error": "string"
+                    },
+                    "example": {
+                      "error": "Usuário não encontrado"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "admin": {
+            "type": "boolean"
+          },
+          "created_at": {
+            "type": "date"
+          },
+          "updated_at": {
+            "type": "date"
+          }
+        }
+      }
+    }
+  }
+}
