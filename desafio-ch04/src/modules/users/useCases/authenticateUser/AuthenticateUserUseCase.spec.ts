@@ -1,6 +1,7 @@
 import { InMemoryUsersRepository } from "../../repositories/in-memory/InMemoryUsersRepository";
 import { CreateUserUseCase } from "../createUser/CreateUserUseCase";
 import { AuthenticateUserUseCase } from "./AuthenticateUserUseCase";
+import { IncorrectEmailOrPasswordError } from "./IncorrectEmailOrPasswordError";
 
 let authenticateUserUseCase: AuthenticateUserUseCase;
 let userRepositoryInMemory: InMemoryUsersRepository;
@@ -32,18 +33,37 @@ describe("Authenticate user", () => {
     expect(response).toHaveProperty("token");
   });
 
-  // it("should not be able to authenticate an user with email wrong", async () => {
-  //   const user = await userRepositoryInMemory.create({
-  //     name: "Carlos",
-  //     email: "severo@email.com",
-  //     password: "1234",
-  //   });
+  it("should not be able to authenticate an user with email wrong", async () => {
+    expect(async () => {
+      const user = {
+        name: "Carlos",
+        email: "severo@email.com",
+        password: "1234",
+      };
 
-  //   const response = await authenticateUserUseCase.execute({
-  //     email: user.email,
-  //     password: "1234",
-  //   });
+      await createUserUseCase.execute(user);
 
-  //   expect(response).toHaveProperty("token");
-  // });
+      await authenticateUserUseCase.execute({
+        email: "email@email.com",
+        password: user.password,
+      });
+    }).rejects.toBeInstanceOf(IncorrectEmailOrPasswordError);
+  });
+
+  it("should not be able to authenticate an user with password wrong", async () => {
+    expect(async () => {
+      const user = {
+        name: "Carlos",
+        email: "severo@email.com",
+        password: "1234",
+      };
+
+      await createUserUseCase.execute(user);
+
+      await authenticateUserUseCase.execute({
+        email: user.email,
+        password: '12345',
+      });
+    }).rejects.toBeInstanceOf(IncorrectEmailOrPasswordError);
+  });
 });

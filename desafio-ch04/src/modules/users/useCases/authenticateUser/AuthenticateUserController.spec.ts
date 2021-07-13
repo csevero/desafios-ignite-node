@@ -5,7 +5,7 @@ import { Connection } from "typeorm";
 
 let connection: Connection;
 
-describe("Create User Controller", () => {
+describe("Authenticate User", () => {
   beforeAll(async () => {
     connection = await createConnection();
 
@@ -17,11 +17,16 @@ describe("Create User Controller", () => {
     await connection.close();
   });
 
-  it("/users - POST", async () => {
-    const result = await request(app)
+  it("/sessions - POST", async () => {
+    await request(app)
       .post("/api/v1/users")
       .send({ name: "carlos", email: "severo@email.com", password: "1234" });
 
-    expect(result.status).toBe(201);
+    const result = await request(app)
+      .post("/api/v1/sessions")
+      .send({ email: "severo@email.com", password: "1234" });
+
+    expect(result.status).toBe(200);
+    expect(result.body).toHaveProperty("token");
   });
 });

@@ -5,7 +5,7 @@ import { Connection } from "typeorm";
 
 let connection: Connection;
 
-describe("Create User Controller", () => {
+describe("Show User Profile", () => {
   beforeAll(async () => {
     connection = await createConnection();
 
@@ -17,11 +17,26 @@ describe("Create User Controller", () => {
     await connection.close();
   });
 
-  it("/users - POST", async () => {
-    const result = await request(app)
+  it("/profile - GET", async () => {
+    await request(app)
       .post("/api/v1/users")
       .send({ name: "carlos", email: "severo@email.com", password: "1234" });
 
-    expect(result.status).toBe(201);
+    const user = await request(app)
+      .post("/api/v1/sessions")
+      .send({ email: "severo@email.com", password: "1234" });
+
+    const { token } = user.body;
+
+    console.log(token);
+
+    const result = await request(app)
+      .get("/api/v1/profile")
+      .set({ Authorization: `Bearer ${token}` });
+
+    console.log(result.body);
+
+    expect(result.status).toBe(200);
+    expect(result.body).toHaveProperty("id");
   });
 });
