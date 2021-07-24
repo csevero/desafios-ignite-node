@@ -21,22 +21,31 @@ custom:
 
 provider:
   name: aws
+  runtime: nodejs14.x
+  region: sa-east-1
 
 functions:
-  hello:
-    handler: src/functions/hello.handle
+  createTodo:
+    handler: src/functions/createTodo.handle
     events:
       - http:
-          path: /hello
+          path: /createTodo/{id}
+          method: POST
+          cors: true
+  listTodo:
+    handler: src/functions/listTodo.handle
+    events:
+      - http:
+          path: /listTodo/{id}
           method: GET
-          cors: true 
+          cors: true
 
 resources:
   Resources:
-    dbCertificateUsers:
+    dbUsersTodos:
       Type: AWS::DynamoDB::Table
       Properties:
-        TableName: users_certificates
+        TableName: users_todos
         ProvisionedThroughput:
           ReadCapacityUnits: 5
           WriteCapacityUnits: 5
